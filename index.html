@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🃏 Top Trumps</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #2c2c2c; /* Dark grey background */
+      color: white;
+    }
+
+    .card-container {
+      perspective: 1000px;
+    }
+
+    .card {
+      width: 300px;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      transition: transform 0.6s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 10px;
+    }
+
+    .card-front {
+      background-color: #004080; /* Deep blue for the front */
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .card-back {
+      background-color: white;
+      color: black;
+      border: 2px solid #000;
+      transform: rotateY(180deg);
+      padding: 10px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-stats {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .card-instruction {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="card" id="card" onclick="flipCard()">
+      <div class="card-front" id="card-front">
+        TOP TRUMPS
+      </div>
+      <div class="card-back" id="card-back">
+        <!-- Content dynamically inserted -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cards = [
+      { name: "Donald Trump", competence: 72, ingenuity: 78, socialSuccess: 89, materialWealth: 85, contentment: 49, Karma: 20 },
+      { name: "Joe Rogan", competence: 78, ingenuity: 59, socialSuccess: 92, materialWealth: 70, contentment: 85, Karma: 70 },
+      { name: "Homer Simpson", competence: 21, ingenuity: 64, socialSuccess: 60, materialWealth: 50, contentment: 66, Karma: 76 },
+      { name: "The Joker", competence: 79, ingenuity: 88, socialSuccess: 5, materialWealth: 20, contentment: 74, Karma: 5 },
+      { name: "James Bond", competence: 77, ingenuity: 76, socialSuccess: 72, materialWealth: 50, contentment: 65, Karma: 45 },
+      { name: "Mr Blobby", competence: 4, ingenuity: 5, socialSuccess: 49, materialWealth: 35, contentment: 99, Karma: 85 },
+      { name: "Captain Jack Sparrow", competence: 40, ingenuity: 88, socialSuccess: 50, materialWealth: 45, contentment: 45, Karma: 30 },
+
+      // Add more cards here as needed
+    ];
+
+    let firstFlip = true; // Track if it's the first flip
+    let availableCards = [...cards]; // Copy of all cards to track available cards
+
+    function flipCard() {
+      const cardElement = document.querySelector('.card');
+      const cardBack = document.getElementById('card-back');
+      const cardFront = document.getElementById('card-front');
+
+      // If no cards are left, show RESET button
+      if (availableCards.length === 0) {
+        cardBack.innerHTML = `
+          <div class="card-instruction">RESET</div>
+        `;
+        cardElement.onclick = () => location.reload(); // Refresh the page
+        return;
+      }
+
+      // Get a random card and remove it from the available cards
+      const randomIndex = Math.floor(Math.random() * availableCards.length);
+      const randomCard = availableCards.splice(randomIndex, 1)[0];
+
+      // Set card back content with attributes
+      cardBack.innerHTML = `
+        <div class="card-title">${randomCard.name}</div>
+        <div class="card-stats">
+          Competence: ${randomCard.competence}<br>
+          Ingenuity: ${randomCard.ingenuity}<br>
+          Social Success: ${randomCard.socialSuccess}<br>
+          Material Wealth: ${randomCard.materialWealth}<br>
+          Contentment: ${randomCard.contentment}<br>
+          Karma: ${randomCard.Karma}
+        </div>
+      `;
+
+      // Ensure the front (TOP TRUMPS) isn't shown again
+      if (firstFlip) {
+        cardElement.style.transform = 'rotateY(180deg)';
+        cardFront.style.display = 'none';
+        firstFlip = false;
+      } else {
+        // Flip the card with animation
+        cardElement.style.transform = 'rotateY(0deg)';
+        setTimeout(() => {
+          cardElement.style.transform = 'rotateY(180deg)';
+        }, 100);
+      }
+    }
+  </script>
+</body>
+</html>
